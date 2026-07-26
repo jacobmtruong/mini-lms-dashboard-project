@@ -5,12 +5,14 @@ import type { Course } from "../../types/course";
 type CourseCardProps = {
   course: Course;
   isFavorite?: boolean;
+  showFavoriteButton?: boolean;
   onToggleFavorite?: (courseId: number) => void;
 };
 
 function CourseCard({
   course,
   isFavorite = false,
+  showFavoriteButton = true,
   onToggleFavorite,
 }: CourseCardProps) {
   function handleFavoriteClick() {
@@ -19,10 +21,12 @@ function CourseCard({
     }
   }
 
+  const categoryClass = course.category.toLowerCase();
+
   return (
     <article className="course-card">
       <div className="course-card__image-wrapper">
-        <Link to={`/courses/${course.id}`}>
+        <Link to={`/courses/${course.id}`} aria-label={`View ${course.title}`}>
           <img
             className="course-card__image"
             src={course.image}
@@ -31,31 +35,33 @@ function CourseCard({
         </Link>
 
         <span
-          className={`course-card__category course-card__category--${course.category.toLowerCase()}`}
+          className={`course-card__category course-card__category--${categoryClass}`}
         >
-          {course.category.toLowerCase()}
+          {categoryClass}
         </span>
 
-        <button
-          className={
-            isFavorite
-              ? "course-card__favorite course-card__favorite--active"
-              : "course-card__favorite"
-          }
-          type="button"
-          aria-label={
-            isFavorite
-              ? `Remove ${course.title} from favorites`
-              : `Add ${course.title} to favorites`
-          }
-          onClick={handleFavoriteClick}
-        >
-          <Heart
-            size={22}
-            strokeWidth={2}
-            fill={isFavorite ? "currentColor" : "none"}
-          />
-        </button>
+        {showFavoriteButton && (
+          <button
+            className={
+              isFavorite
+                ? "course-card__favorite course-card__favorite--active"
+                : "course-card__favorite"
+            }
+            type="button"
+            aria-label={
+              isFavorite
+                ? `Remove ${course.title} from favorites`
+                : `Add ${course.title} to favorites`
+            }
+            onClick={handleFavoriteClick}
+          >
+            <Heart
+              size={22}
+              strokeWidth={2}
+              fill={isFavorite ? "currentColor" : "none"}
+            />
+          </button>
+        )}
       </div>
 
       <div className="course-card__body">
