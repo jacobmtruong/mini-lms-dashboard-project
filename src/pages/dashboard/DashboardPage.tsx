@@ -1,11 +1,11 @@
 import ContinueLearning from "../../components/dashboard/ContinueLearning";
 import DashboardStats from "../../components/dashboard/DashboardStats";
 import RecommendedCourses from "../../components/dashboard/RecommendedCourses";
-import { useAuth } from "../../context/AuthContext";
+import { useAppSelector } from "../../app/hooks";
 import "./DashboardPage.scss";
 
 function DashboardPage() {
-  const { user } = useAuth();
+  const user = useAppSelector((state) => state.auth.user);
 
   return (
     <section className="dashboard-overview-page">

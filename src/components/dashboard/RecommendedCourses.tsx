@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import { courses } from "../../data/courses";
+import { useAppSelector } from "../../app/hooks";
 
 function RecommendedCourses() {
+  const courses = useAppSelector((state) => state.courses.items);
+
   const designCourse = courses.find((course) => {
     return course.title === "UI/UX Design Masterclass";
   });

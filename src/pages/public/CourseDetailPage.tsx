@@ -1,11 +1,13 @@
 import { useParams } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks";
 import CourseDetail from "../../components/course/CourseDetail";
 import CourseNotFound from "../../components/course/CourseNotFound";
-import { courses } from "../../data/courses";
 import "./CourseDetailPage.scss";
 
 function CourseDetailPage() {
   const { courseId } = useParams();
+
+  const courses = useAppSelector((state) => state.courses.items);
 
   const numericCourseId = Number(courseId);
 

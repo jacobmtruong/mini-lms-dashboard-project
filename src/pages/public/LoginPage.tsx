@@ -5,8 +5,9 @@ import {
   useNavigate,
   type Location,
 } from "react-router-dom";
-import { useState, type FormEvent } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { login } from "../../features/auth/authSlice";
 import "./LoginPage.scss";
 
 type LoginForm = {
@@ -25,7 +26,9 @@ type LoginLocationState = {
 };
 
 function LoginPage() {
-  const { isLoggedIn, login } = useAuth();
+  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,21 +44,43 @@ function LoginPage() {
 
   const [errors, setErrors] = useState<LoginErrors>({});
 
-  function handleEmailChange(event: React.ChangeEvent<HTMLInputElement>) {
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/dashboard", {
+        replace: true,
+      });
+    }
+  }, [isLoggedIn, navigate]);
+
+  function handleEmailChange(event: ChangeEvent<HTMLInputElement>) {
     setForm({
       ...form,
       email: event.target.value,
     });
+
+    if (errors.email) {
+      setErrors({
+        ...errors,
+        email: undefined,
+      });
+    }
   }
 
-  function handlePasswordChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function handlePasswordChange(event: ChangeEvent<HTMLInputElement>) {
     setForm({
       ...form,
       password: event.target.value,
     });
+
+    if (errors.password) {
+      setErrors({
+        ...errors,
+        password: undefined,
+      });
+    }
   }
 
-  function handleRememberChange(event: React.ChangeEvent<HTMLInputElement>) {
+  function handleRememberChange(event: ChangeEvent<HTMLInputElement>) {
     setForm({
       ...form,
       rememberMe: event.target.checked,
@@ -64,10 +89,11 @@ function LoginPage() {
 
   function validateForm() {
     const newErrors: LoginErrors = {};
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!form.email.trim()) {
       newErrors.email = "Email address is required.";
-    } else if (!form.email.includes("@")) {
+    } else if (!emailPattern.test(form.email)) {
       newErrors.email = "Please enter a valid email address.";
     }
 
@@ -91,7 +117,12 @@ function LoginPage() {
       return;
     }
 
-    login(form.email);
+    dispatch(
+      login({
+        name: "you",
+        email: form.email.trim(),
+      }),
+    );
 
     navigate(redirectPath, {
       replace: true,
@@ -148,6 +179,7 @@ function LoginPage() {
               type="email"
               value={form.email}
               placeholder="you@example.com"
+              autoComplete="email"
               onChange={handleEmailChange}
             />
           </div>
@@ -174,6 +206,7 @@ function LoginPage() {
               type="password"
               value={form.password}
               placeholder="Enter your password"
+              autoComplete="current-password"
               onChange={handlePasswordChange}
             />
           </div>

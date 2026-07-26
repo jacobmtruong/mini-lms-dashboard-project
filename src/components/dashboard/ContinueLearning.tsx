@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
-import { courses } from "../../data/courses";
+import { useAppSelector } from "../../app/hooks";
 
 function ContinueLearning() {
+  const courses = useAppSelector((state) => state.courses.items);
+
   const learningCourses = courses.filter((course) => {
     return course.enrolled && course.progress !== undefined;
   });

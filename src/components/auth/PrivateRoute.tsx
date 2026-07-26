@@ -1,8 +1,8 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAppSelector } from "../../app/hooks";
 
 function PrivateRoute() {
-  const { isLoggedIn } = useAuth();
+  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
   const location = useLocation();
 
   if (!isLoggedIn) {

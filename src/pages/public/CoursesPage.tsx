@@ -1,8 +1,10 @@
 import { Search, SlidersHorizontal } from "lucide-react";
 import CourseGrid from "../../components/course/CourseGrid";
-import { courses } from "../../data/courses";
+import { useAppSelector } from "../../app/hooks";
 
 function CoursesPage() {
+  const courses = useAppSelector((state) => state.courses.items);
+
   return (
     <section className="courses-page">
       <div className="page-container">

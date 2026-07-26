@@ -1,10 +1,12 @@
 import { BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks";
 import CourseGrid from "../../components/course/CourseGrid";
-import { courses } from "../../data/courses";
 import "./MyCoursesPage.scss";
 
 function MyCoursesPage() {
+  const courses = useAppSelector((state) => state.courses.items);
+
   const enrolledCourses = courses.filter((course) => {
     return course.enrolled;
   });

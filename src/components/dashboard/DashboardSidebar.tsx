@@ -1,9 +1,11 @@
 import { BookOpen, LayoutDashboard, LogOut, Settings } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { logout } from "../../features/auth/authSlice";
 
 function DashboardSidebar() {
-  const { user, logout } = useAuth();
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   function getNavigationClass({ isActive }: { isActive: boolean }) {
@@ -13,9 +15,11 @@ function DashboardSidebar() {
   }
 
   function handleLogout() {
-    logout();
+    dispatch(logout());
     navigate("/login");
   }
+
+  const userInitial = user?.name.charAt(0).toUpperCase() || "Y";
 
   return (
     <aside className="dashboard-sidebar">
@@ -45,9 +49,7 @@ function DashboardSidebar() {
 
       <div className="dashboard-sidebar__bottom">
         <div className="dashboard-sidebar__profile">
-          <span className="dashboard-sidebar__avatar">
-            {user?.name.charAt(0).toUpperCase() || "Y"}
-          </span>
+          <span className="dashboard-sidebar__avatar">{userInitial}</span>
 
           <div>
             <strong>{user?.name || "you"}</strong>
