@@ -1,5 +1,7 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import PrivateRoute from "./components/auth/PrivateRoute";
 import PublicLayout from "./components/layout/PublicLayout";
+import DashboardPage from "./pages/dashboard/DashboardPage";
 import CourseDetailPage from "./pages/public/CourseDetailPage";
 import CoursesPage from "./pages/public/CoursesPage";
 import FavoritesPage from "./pages/public/FavoritesPage";
@@ -16,6 +18,12 @@ function App() {
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/login" element={<LoginPage />} />
       </Route>
+
+      <Route element={<PrivateRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
