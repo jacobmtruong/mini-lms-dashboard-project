@@ -1,0 +1,119 @@
+$primary-color: #2563eb;
+$primary-dark: #1d4ed8;
+$heading-color: #0f172a;
+$muted-color: #64748b;
+$border-color: #dbe3ef;
+$white: #ffffff;
+$error-color: #dc2626;
+
+.course-state {
+  display: flex;
+  width: 100%;
+  min-height: 340px;
+  padding: 40px 24px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  background-color: $white;
+  border: 1px dashed $border-color;
+  border-radius: 14px;
+
+  h2 {
+    margin: 22px 0 0;
+    color: $heading-color;
+    font-size: 25px;
+    line-height: 1.3;
+  }
+
+  p {
+    max-width: 500px;
+    margin: 11px 0 0;
+    color: $muted-color;
+    line-height: 1.7;
+  }
+
+  &__icon {
+    display: inline-flex;
+    width: 72px;
+    height: 72px;
+    align-items: center;
+    justify-content: center;
+    color: $primary-color;
+    background-color: #eff6ff;
+    border-radius: 50%;
+  }
+
+  &__button {
+    display: inline-flex;
+    min-height: 44px;
+    margin-top: 24px;
+    padding: 0 18px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: $white;
+    font-weight: 700;
+    background-color: $primary-color;
+    border: 1px solid $primary-color;
+    border-radius: 8px;
+    transition:
+      background-color 160ms ease,
+      transform 160ms ease;
+
+    &:hover {
+      background-color: $primary-dark;
+      transform: translateY(-1px);
+    }
+  }
+
+  &__spinner {
+    display: inline-block;
+    width: 54px;
+    height: 54px;
+    border: 5px solid #dbeafe;
+    border-top-color: $primary-color;
+    border-radius: 50%;
+    animation: course-spinner 800ms linear infinite;
+  }
+
+  &--error {
+    .course-state__icon {
+      color: $error-color;
+      background-color: #fef2f2;
+    }
+
+    .course-state__button {
+      background-color: $error-color;
+      border-color: $error-color;
+
+      &:hover {
+        background-color: #b91c1c;
+      }
+    }
+  }
+
+  &--empty {
+    .course-state__icon {
+      color: #94a3b8;
+      background-color: #f8fafc;
+    }
+  }
+}
+
+@keyframes course-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 650px) {
+  .course-state {
+    min-height: 300px;
+    padding: 34px 20px;
+
+    h2 {
+      font-size: 22px;
+    }
+  }
+}

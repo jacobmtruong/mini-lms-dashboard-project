@@ -1,36 +1,55 @@
 import { BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import CourseGrid from "../../components/course/CourseGrid";
+import CourseErrorState from "../../components/shared/CourseErrorState";
+import CourseLoadingState from "../../components/shared/CourseLoadingState";
+import { fetchCourses } from "../../features/courses/coursesSlice";
 import "./MyCoursesPage.scss";
 
 function MyCoursesPage() {
-  const courses = useAppSelector((state) => state.courses.items);
+  const dispatch = useAppDispatch();
+
+  const courses = useAppSelector((state) => {
+    return state.courses.items;
+  });
+
+  const status = useAppSelector((state) => {
+    return state.courses.status;
+  });
+
+  const error = useAppSelector((state) => {
+    return state.courses.error;
+  });
 
   const enrolledCourses = courses.filter((course) => {
     return course.enrolled;
   });
 
-  return (
-    <section className="my-courses-page">
-      <div className="my-courses-page__heading">
-        <div>
-          <h1>My Courses</h1>
+  function handleRetry() {
+    dispatch(
+      fetchCourses({
+        shouldFail: false,
+      }),
+    );
+  }
 
-          <p>Manage and continue your enrolled courses.</p>
-        </div>
+  function renderMyCourses() {
+    if (status === "idle" || status === "loading") {
+      return <CourseLoadingState message="Loading your courses..." />;
+    }
 
-        <span className="my-courses-page__count">
-          <BookOpen size={18} />
-          {enrolledCourses.length} enrolled
-        </span>
-      </div>
+    if (status === "failed") {
+      return (
+        <CourseErrorState
+          message={error || "Unable to load your courses."}
+          onRetry={handleRetry}
+        />
+      );
+    }
 
-      {enrolledCourses.length > 0 ? (
-        <div className="my-courses-page__grid">
-          <CourseGrid courses={enrolledCourses} showFavoriteButton={false} />
-        </div>
-      ) : (
+    if (enrolledCourses.length === 0) {
+      return (
         <div className="my-courses-empty">
           <span className="my-courses-empty__icon">
             <BookOpen size={34} />
@@ -47,7 +66,34 @@ function MyCoursesPage() {
             Browse Courses
           </Link>
         </div>
-      )}
+      );
+    }
+
+    return (
+      <div className="my-courses-page__grid">
+        <CourseGrid courses={enrolledCourses} showFavoriteButton={false} />
+      </div>
+    );
+  }
+
+  return (
+    <section className="my-courses-page">
+      <div className="my-courses-page__heading">
+        <div>
+          <h1>My Courses</h1>
+
+          <p>Manage and continue your enrolled courses.</p>
+        </div>
+
+        {status === "succeeded" && (
+          <span className="my-courses-page__count">
+            <BookOpen size={18} />
+            {enrolledCourses.length} enrolled
+          </span>
+        )}
+      </div>
+
+      <div className="my-courses-page__content">{renderMyCourses()}</div>
     </section>
   );
 }

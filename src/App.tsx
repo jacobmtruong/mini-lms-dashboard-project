@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import PublicLayout from "./components/layout/PublicLayout";
+import CourseDataLoader from "./components/shared/CourseDataLoader";
 import DashboardLayout from "./layouts/DashboardLayout";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import MyCoursesPage from "./pages/dashboard/MyCoursesPage";
@@ -13,27 +14,31 @@ import LoginPage from "./pages/public/LoginPage";
 
 function App() {
   return (
-    <Routes>
-      <Route element={<PublicLayout />}>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/courses" element={<CoursesPage />} />
-        <Route path="/courses/:courseId" element={<CourseDetailPage />} />
-        <Route path="/favorites" element={<FavoritesPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Route>
+    <>
+      <CourseDataLoader />
 
-      <Route element={<PrivateRoute />}>
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<DashboardPage />} />
-
-          <Route path="my-courses" element={<MyCoursesPage />} />
-
-          <Route path="settings" element={<SettingsPage />} />
+      <Routes>
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:courseId" element={<CourseDetailPage />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/login" element={<LoginPage />} />
         </Route>
-      </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route element={<PrivateRoute />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<DashboardPage />} />
+
+            <Route path="my-courses" element={<MyCoursesPage />} />
+
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }
 

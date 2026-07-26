@@ -460,3 +460,24 @@ $success-color: #22c55e;
     padding: 40px 22px;
   }
 }
+
+.course-detail-page {
+  min-height: calc(100vh - 74px);
+  padding: 60px 0;
+  background-color: #f7f9fc;
+
+  &__state {
+    width: min(100% - 40px, 900px);
+  }
+}
+
+@media (max-width: 650px) {
+  .course-detail-page {
+    min-height: calc(100vh - 66px);
+    padding: 40px 0;
+
+    &__state {
+      width: min(100% - 28px, 900px);
+    }
+  }
+}

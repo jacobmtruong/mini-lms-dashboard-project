@@ -1,9 +1,54 @@
 import { Search, SlidersHorizontal } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import CourseGrid from "../../components/course/CourseGrid";
-import { useAppSelector } from "../../app/hooks";
+import CourseEmptyState from "../../components/shared/CourseEmptyState";
+import CourseErrorState from "../../components/shared/CourseErrorState";
+import CourseLoadingState from "../../components/shared/CourseLoadingState";
+import { fetchCourses } from "../../features/courses/coursesSlice";
 
 function CoursesPage() {
-  const courses = useAppSelector((state) => state.courses.items);
+  const dispatch = useAppDispatch();
+
+  const courses = useAppSelector((state) => {
+    return state.courses.items;
+  });
+
+  const status = useAppSelector((state) => {
+    return state.courses.status;
+  });
+
+  const error = useAppSelector((state) => {
+    return state.courses.error;
+  });
+
+  function handleRetry() {
+    dispatch(
+      fetchCourses({
+        shouldFail: false,
+      }),
+    );
+  }
+
+  function renderCourseContent() {
+    if (status === "idle" || status === "loading") {
+      return <CourseLoadingState />;
+    }
+
+    if (status === "failed") {
+      return (
+        <CourseErrorState
+          message={error || "Unable to load courses."}
+          onRetry={handleRetry}
+        />
+      );
+    }
+
+    if (status === "succeeded" && courses.length === 0) {
+      return <CourseEmptyState />;
+    }
+
+    return <CourseGrid courses={courses} />;
+  }
 
   return (
     <section className="courses-page">
@@ -44,7 +89,7 @@ function CoursesPage() {
           </div>
         </div>
 
-        <CourseGrid courses={courses} />
+        {renderCourseContent()}
       </div>
     </section>
   );

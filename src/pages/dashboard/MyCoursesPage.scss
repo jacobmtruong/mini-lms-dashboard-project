@@ -164,3 +164,13 @@ $white: #ffffff;
     padding: 30px 20px;
   }
 }
+
+.my-courses-page {
+  &__content {
+    margin-top: 36px;
+  }
+
+  &__content &__grid {
+    margin-top: 0;
+  }
+}

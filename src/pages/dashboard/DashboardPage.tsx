@@ -1,11 +1,60 @@
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import ContinueLearning from "../../components/dashboard/ContinueLearning";
 import DashboardStats from "../../components/dashboard/DashboardStats";
 import RecommendedCourses from "../../components/dashboard/RecommendedCourses";
-import { useAppSelector } from "../../app/hooks";
+import CourseErrorState from "../../components/shared/CourseErrorState";
+import CourseLoadingState from "../../components/shared/CourseLoadingState";
+import { fetchCourses } from "../../features/courses/coursesSlice";
 import "./DashboardPage.scss";
 
 function DashboardPage() {
-  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+
+  const user = useAppSelector((state) => {
+    return state.auth.user;
+  });
+
+  const courseStatus = useAppSelector((state) => {
+    return state.courses.status;
+  });
+
+  const courseError = useAppSelector((state) => {
+    return state.courses.error;
+  });
+
+  function handleRetry() {
+    dispatch(
+      fetchCourses({
+        shouldFail: false,
+      }),
+    );
+  }
+
+  function renderDashboardContent() {
+    if (courseStatus === "idle" || courseStatus === "loading") {
+      return <CourseLoadingState message="Loading your dashboard..." />;
+    }
+
+    if (courseStatus === "failed") {
+      return (
+        <CourseErrorState
+          message={courseError || "Unable to load dashboard courses."}
+          onRetry={handleRetry}
+        />
+      );
+    }
+
+    return (
+      <>
+        <DashboardStats />
+
+        <div className="dashboard-overview-grid">
+          <ContinueLearning />
+          <RecommendedCourses />
+        </div>
+      </>
+    );
+  }
 
   return (
     <section className="dashboard-overview-page">
@@ -17,11 +66,8 @@ function DashboardPage() {
         </p>
       </div>
 
-      <DashboardStats />
-
-      <div className="dashboard-overview-grid">
-        <ContinueLearning />
-        <RecommendedCourses />
+      <div className="dashboard-overview-content">
+        {renderDashboardContent()}
       </div>
     </section>
   );
