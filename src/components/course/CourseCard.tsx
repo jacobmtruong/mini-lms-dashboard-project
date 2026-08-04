@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, Heart, Tag } from "lucide-react";
+import { BarChart3, BookOpen, Star, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Course } from "../../types/course";
 
@@ -16,9 +16,11 @@ function CourseCard({
   onToggleFavorite,
 }: CourseCardProps) {
   function handleFavoriteClick() {
-    if (onToggleFavorite) {
-      onToggleFavorite(course.id);
+    if (!onToggleFavorite) {
+      return;
     }
+
+    onToggleFavorite(course.id);
   }
 
   const categoryClass = course.category.toLowerCase();
@@ -48,14 +50,20 @@ function CourseCard({
                 : "course-card__favorite"
             }
             type="button"
+            title={
+              isFavorite
+                ? `Remove ${course.title} from favorites`
+                : `Add ${course.title} to favorites`
+            }
             aria-label={
               isFavorite
                 ? `Remove ${course.title} from favorites`
                 : `Add ${course.title} to favorites`
             }
+            disabled={!onToggleFavorite}
             onClick={handleFavoriteClick}
           >
-            <Heart
+            <Star
               size={22}
               strokeWidth={2}
               fill={isFavorite ? "currentColor" : "none"}

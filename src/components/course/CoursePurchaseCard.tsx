@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Star } from "lucide-react";
 import type { Course } from "../../types/course";
 
 type CoursePurchaseCardProps = {
@@ -34,6 +34,11 @@ function CoursePurchaseCard({
               : "course-detail-favorite-button"
           }
           type="button"
+          title={
+            isFavorite
+              ? `Remove ${course.title} from favorites`
+              : `Add ${course.title} to favorites`
+          }
           aria-label={
             isFavorite
               ? `Remove ${course.title} from favorites`
@@ -41,7 +46,11 @@ function CoursePurchaseCard({
           }
           onClick={handleFavoriteClick}
         >
-          <Heart size={23} fill={isFavorite ? "currentColor" : "none"} />
+          <Star
+            size={23}
+            strokeWidth={2}
+            fill={isFavorite ? "currentColor" : "none"}
+          />
         </button>
       </div>
 

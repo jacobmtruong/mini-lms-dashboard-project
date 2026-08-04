@@ -413,15 +413,23 @@ img {
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
     transition:
       color 160ms ease,
+      background-color 160ms ease,
       transform 160ms ease;
 
     &:hover {
-      color: $danger-color;
+      color: #f59e0b;
+      background-color: #fffbeb;
       transform: scale(1.06);
     }
 
     &--active {
-      color: $danger-color;
+      color: #f59e0b;
+      background-color: #fffbeb;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
     }
   }
 

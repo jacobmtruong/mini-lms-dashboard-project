@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import CourseGrid from "../../components/course/CourseGrid";
@@ -52,14 +52,14 @@ function FavoritesPage() {
       return (
         <div className="favorites-empty">
           <span className="favorites-empty__icon">
-            <Heart size={34} />
+            <Star size={34} />
           </span>
 
           <h2>No favorites yet</h2>
 
           <p>
             You haven&apos;t added any courses to your favorites yet. Browse
-            courses and click the heart icon to save them.
+            courses and click the star icon to save them.
           </p>
 
           <Link className="button button--primary" to="/courses">

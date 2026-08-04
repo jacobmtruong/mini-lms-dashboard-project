@@ -8,7 +8,10 @@ import {
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import CourseGrid from "../../components/course/CourseGrid";
+import CourseEmptyState from "../../components/shared/CourseEmptyState";
+import CourseErrorState from "../../components/shared/CourseErrorState";
 import CourseLoadingState from "../../components/shared/CourseLoadingState";
+import { fetchCourses } from "../../features/courses/coursesSlice";
 import { toggleFavorite } from "../../features/favorites/favoritesSlice";
 import "./HomePage.scss";
 
@@ -17,17 +20,55 @@ function HomePage() {
 
   const courses = useAppSelector((state) => state.courses.items);
   const courseStatus = useAppSelector((state) => state.courses.status);
+  const courseError = useAppSelector((state) => state.courses.error);
+  const favoriteCourseIds = useAppSelector(
+    (state) => state.favorites.courseIds,
+  );
 
-  const favoriteCourseIds = useAppSelector((state) => {
-    return state.favorites.courseIds;
-  });
-
-  const featuredCourses = courses.filter((course) => {
-    return course.featured;
-  });
+  const featuredCourses = courses.filter((course) => course.featured);
 
   function handleToggleFavorite(courseId: number) {
     dispatch(toggleFavorite(courseId));
+  }
+
+  function handleRetry() {
+    dispatch(
+      fetchCourses({
+        shouldFail: false,
+      }),
+    );
+  }
+
+  function renderFeaturedCourses() {
+    if (courseStatus === "idle" || courseStatus === "loading") {
+      return <CourseLoadingState message="Loading featured courses..." />;
+    }
+
+    if (courseStatus === "failed") {
+      return (
+        <CourseErrorState
+          message={courseError || "Unable to load featured courses."}
+          onRetry={handleRetry}
+        />
+      );
+    }
+
+    if (featuredCourses.length === 0) {
+      return (
+        <CourseEmptyState
+          title="No featured courses"
+          message="Featured courses will appear here when they are available."
+        />
+      );
+    }
+
+    return (
+      <CourseGrid
+        courses={featuredCourses}
+        favoriteCourseIds={favoriteCourseIds}
+        onToggleFavorite={handleToggleFavorite}
+      />
+    );
   }
 
   return (
@@ -118,15 +159,7 @@ function HomePage() {
           </div>
 
           <div className="home-featured__content">
-            {courseStatus === "idle" || courseStatus === "loading" ? (
-              <CourseLoadingState />
-            ) : (
-              <CourseGrid
-                courses={featuredCourses}
-                favoriteCourseIds={favoriteCourseIds}
-                onToggleFavorite={handleToggleFavorite}
-              />
-            )}
+            {renderFeaturedCourses()}
           </div>
         </div>
       </section>
