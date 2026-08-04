@@ -3,9 +3,19 @@ import type { Course } from "../../types/course";
 
 type CoursePurchaseCardProps = {
   course: Course;
+  isFavorite: boolean;
+  onToggleFavorite: (courseId: number) => void;
 };
 
-function CoursePurchaseCard({ course }: CoursePurchaseCardProps) {
+function CoursePurchaseCard({
+  course,
+  isFavorite,
+  onToggleFavorite,
+}: CoursePurchaseCardProps) {
+  function handleFavoriteClick() {
+    onToggleFavorite(course.id);
+  }
+
   return (
     <aside className="course-purchase-card">
       <img
@@ -18,11 +28,20 @@ function CoursePurchaseCard({ course }: CoursePurchaseCardProps) {
         <strong>${course.price}</strong>
 
         <button
-          className="course-detail-favorite-button"
+          className={
+            isFavorite
+              ? "course-detail-favorite-button course-detail-favorite-button--active"
+              : "course-detail-favorite-button"
+          }
           type="button"
-          aria-label={`Add ${course.title} to favorites`}
+          aria-label={
+            isFavorite
+              ? `Remove ${course.title} from favorites`
+              : `Add ${course.title} to favorites`
+          }
+          onClick={handleFavoriteClick}
         >
-          <Heart size={23} />
+          <Heart size={23} fill={isFavorite ? "currentColor" : "none"} />
         </button>
       </div>
 

@@ -5,22 +5,19 @@ import CourseNotFound from "../../components/course/CourseNotFound";
 import CourseErrorState from "../../components/shared/CourseErrorState";
 import CourseLoadingState from "../../components/shared/CourseLoadingState";
 import { fetchCourses } from "../../features/courses/coursesSlice";
+import { toggleFavorite } from "../../features/favorites/favoritesSlice";
 import "./CourseDetailPage.scss";
 
 function CourseDetailPage() {
   const dispatch = useAppDispatch();
   const { courseId } = useParams();
 
-  const courses = useAppSelector((state) => {
-    return state.courses.items;
-  });
+  const courses = useAppSelector((state) => state.courses.items);
+  const status = useAppSelector((state) => state.courses.status);
+  const error = useAppSelector((state) => state.courses.error);
 
-  const status = useAppSelector((state) => {
-    return state.courses.status;
-  });
-
-  const error = useAppSelector((state) => {
-    return state.courses.error;
+  const favoriteCourseIds = useAppSelector((state) => {
+    return state.favorites.courseIds;
   });
 
   function handleRetry() {
@@ -29,6 +26,10 @@ function CourseDetailPage() {
         shouldFail: false,
       }),
     );
+  }
+
+  function handleToggleFavorite(selectedCourseId: number) {
+    dispatch(toggleFavorite(selectedCourseId));
   }
 
   if (status === "idle" || status === "loading") {
@@ -64,7 +65,15 @@ function CourseDetailPage() {
     return <CourseNotFound />;
   }
 
-  return <CourseDetail course={course} />;
+  const isFavorite = favoriteCourseIds.includes(course.id);
+
+  return (
+    <CourseDetail
+      course={course}
+      isFavorite={isFavorite}
+      onToggleFavorite={handleToggleFavorite}
+    />
+  );
 }
 
 export default CourseDetailPage;

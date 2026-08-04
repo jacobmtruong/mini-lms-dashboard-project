@@ -6,9 +6,15 @@ import CoursePurchaseCard from "./CoursePurchaseCard";
 
 type CourseDetailProps = {
   course: Course;
+  isFavorite: boolean;
+  onToggleFavorite: (courseId: number) => void;
 };
 
-function CourseDetail({ course }: CourseDetailProps) {
+function CourseDetail({
+  course,
+  isFavorite,
+  onToggleFavorite,
+}: CourseDetailProps) {
   return (
     <div className="course-detail">
       <CourseDetailHero course={course} />
@@ -31,7 +37,11 @@ function CourseDetail({ course }: CourseDetailProps) {
           <CourseContent />
         </div>
 
-        <CoursePurchaseCard course={course} />
+        <CoursePurchaseCard
+          course={course}
+          isFavorite={isFavorite}
+          onToggleFavorite={onToggleFavorite}
+        />
       </div>
     </div>
   );
